@@ -34,6 +34,9 @@ SET_TARGET_PROPERTIES	( ${ly_lib_shared} PROPERTIES PREFIX "lib" )
 ADD_EXECUTABLE			( yuvconvert ${ly_base_dir}/util/yuvconvert.cc )
 TARGET_LINK_LIBRARIES	( yuvconvert ${ly_lib_static} )
 
+if (MSVC)
+   add_definitions( -D_CRT_SECURE_NO_WARNINGS )
+endif()
 
 INCLUDE ( FindJPEG )
 if (JPEG_FOUND)
@@ -81,7 +84,12 @@ endif()
 
 
 # install the conversion tool, .so, .a, and all the header files
-INSTALL ( PROGRAMS ${CMAKE_BINARY_DIR}/yuvconvert			DESTINATION bin )
+if (MSVC)
+   INSTALL ( PROGRAMS ${CMAKE_BINARY_DIR}/Release/yuvconvert.exe			DESTINATION bin )
+else()
+   INSTALL ( PROGRAMS ${CMAKE_BINARY_DIR}/Release/yuvconvert			DESTINATION bin )
+endif()
+
 INSTALL ( TARGETS ${ly_lib_static}						DESTINATION lib )
 INSTALL ( TARGETS ${ly_lib_shared} LIBRARY				DESTINATION lib RUNTIME DESTINATION bin )
 INSTALL ( DIRECTORY ${PROJECT_SOURCE_DIR}/include/		DESTINATION include )
